@@ -1,7 +1,7 @@
 import pyautogui as pag
 import time
 import pyperclip
-
+pag.FAILSAFE = False
 
 # Define the coordinates and use the `actions` list
 actions = [
@@ -27,7 +27,7 @@ actions = [
 time.sleep(15)  # Adjust the duration as needed
 
 # Wait for a few seconds to give time to focus on the target application
-time.sleep(2)
+time.sleep(15)
 
 # Perform the actions in the specified order
 for x, y, duration in actions:
