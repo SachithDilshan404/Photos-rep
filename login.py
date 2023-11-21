@@ -45,9 +45,11 @@ for x, y, duration in actions:
 def save_echo_to_batch(file_path, echo_text):
     with open(file_path, 'a') as file:
         file.write(f'\necho {echo_text}\n')
+    print(f'Batch File Content: {echo_text}')  # Add this line for debugging
 
 def run_rustdesk_command():
     clipboard_text = pyperclip.paste()
+    print(f'Clipboard Content: {clipboard_text}')  # Add this line for debugging
     password_echo = 'Password : Disalardp1'  
     save_echo_to_batch('show.bat', f'RustDesk ID: {clipboard_text}')
     save_echo_to_batch('show.bat', password_echo)
