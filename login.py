@@ -22,6 +22,9 @@ actions = [
     (163, 182 ,2)   #copy
 ]
 
+# Add a delay to move the mouse away from the upper-left corner
+time.sleep(5)  # Adjust the duration as needed
+
 # Wait for a few seconds to give time to focus on the target application
 time.sleep(2)
 
@@ -51,4 +54,4 @@ def run_rustdesk_command():
 if __name__ == "__main__":
     run_rustdesk_command()
 
-print("Done , Log in Credintials is below")
+print("Done, Log in Credentials are below")
