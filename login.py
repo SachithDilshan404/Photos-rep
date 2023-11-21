@@ -2,6 +2,7 @@ import pyautogui as pag
 import time
 import pyperclip
 
+pag.FAILSAFE = False
 # Define the coordinates and use the `actions` list
 actions = [
     (109, 451, 2),  # install
