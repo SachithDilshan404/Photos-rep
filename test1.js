@@ -1,1 +1,1 @@
-fdgdhgfdhfdgfdgdffgfdgfdgfdgdfgdf
+CSSFontPaletteValuesRulefdsfdsf
