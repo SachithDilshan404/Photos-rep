@@ -15,7 +15,7 @@ C:\Users\Public\Desktop\Winrar.exe /S
 del C:\Users\Public\Desktop\Winrar.exe
 del /f "C:\Users\Public\Desktop\Epic Games Launcher.lnk" > errormsg.txt 2>&1
 del /f "C:\Users\Public\Desktop\Unity Hub.lnk" > errormsg.txt 2>&1
-set password=@#Disala123456
+set password=@#Sachith12345
 powershell -Command "Set-LocalUser -Name 'runneradmin' -Password (ConvertTo-SecureString -AsPlainText '%password%' -Force)"
 start "" "rustdesk.exe"
 python login.py
