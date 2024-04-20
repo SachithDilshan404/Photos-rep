@@ -1,7 +1,6 @@
 import pyautogui as pag
 import time
 import pyperclip
-pag.FAILSAFE = False
 
 # Define the coordinates and use the `actions` list
 actions = [
@@ -23,11 +22,8 @@ actions = [
     (163, 182 ,2)   #copy
 ]
 
-# Add a delay to move the mouse away from the upper-left corner
-time.sleep(15)  # Adjust the duration as needed
-
 # Wait for a few seconds to give time to focus on the target application
-time.sleep(15)
+time.sleep(2)
 
 # Perform the actions in the specified order
 for x, y, duration in actions:
@@ -45,18 +41,14 @@ for x, y, duration in actions:
 def save_echo_to_batch(file_path, echo_text):
     with open(file_path, 'a') as file:
         file.write(f'\necho {echo_text}\n')
-    print(f'Batch File Content: {echo_text}')  # Add this line for debugging
 
 def run_rustdesk_command():
-    time.sleep(5)  # Add a delay of 5 seconds (adjust as needed)
     clipboard_text = pyperclip.paste()
-    print(f'Clipboard Content: {clipboard_text}')
     password_echo = 'Password : Disalardp1'  
     save_echo_to_batch('show.bat', f'RustDesk ID: {clipboard_text}')
     save_echo_to_batch('show.bat', password_echo)
 
-
 if __name__ == "__main__":
     run_rustdesk_command()
 
-print("Done, Log in Credentials are below")
+print("Done , Log in Credintials is below")
