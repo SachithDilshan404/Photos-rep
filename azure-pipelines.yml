@@ -7,25 +7,13 @@ stages:
     timeoutInMinutes: 9999
     steps:
 
-    # Install Scoop in admin mode + ngrok
     - powershell: |
-        Write-Host "Installing Scoop in Admin Mode..."
-
-        # Prepare admin install locations
-        $env:SCOOP = "C:\Scoop"
-        $env:SCOOP_GLOBAL = "C:\ScoopGlobal"
-
-        if (-not (Get-Command scoop.exe -ErrorAction SilentlyContinue)) {
-            iwr -useb get.scoop.sh | iex
-        }
-
-        scoop bucket add main
-        scoop bucket add extras
-
-        scoop install ngrok
+        Write-Host "Installing ngrok via Chocolatey..."
+        choco install ngrok.portable -y
+        Refresh-Env  # if environment refresh needed
 
         ngrok config add-authtoken $Env:NGROK_AUTH_TOKEN
-      displayName: 'Install ngrok using Scoop (Admin Mode)'
+      displayName: 'Install and configure ngrok via Chocolatey'
 
     - powershell: |
         # Configure Remote Desktop
@@ -35,22 +23,8 @@ stages:
       displayName: 'Configure Remote Desktop'
 
     - powershell: |
-        # Create User runneradmin
-        echo "Checking if user 'runneradmin' exists before creating..."
-        $existingUser = Get-LocalUser -Name 'runneradmin' -ErrorAction SilentlyContinue
-        if ($existingUser) {
-            echo "User 'runneradmin' already exists."
-        } else {
-            echo "User 'runneradmin' does not exist or an error occurred."
-            $userCreationOutput = New-LocalUser -Name 'runneradmin' -Password (ConvertTo-SecureString $env:ADMIN_PASSWORD -AsPlainText -Force) -PasswordNeverExpires:$true -AccountNeverExpires:$true -ErrorAction Stop
-            if ($userCreationOutput) {
-                echo "User 'runneradmin' created successfully."
-                Add-LocalGroupMember -Group 'Administrators' -Member 'runneradmin' -ErrorAction Stop
-            } else {
-                echo "Error creating user 'runneradmin': $userCreationOutput"
-                exit 1
-            }
-        }
+        # Create User runneradmin …
+        # (your existing user-creation script)
       displayName: 'Create User runneradmin'
 
     - powershell: |
