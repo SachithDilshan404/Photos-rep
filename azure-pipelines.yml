@@ -7,33 +7,22 @@ stages:
     timeoutInMinutes: 9999
     steps:
 
-    # -------------------------------
-    # Install Scoop + Install ngrok
-    # -------------------------------
+    # Scoop install (ExecutionPolicy-safe)
     - powershell: |
-        Write-Host "Installing Scoop..."
+        Write-Host "Installing Scoop (execution-policy-safe mode)..."
 
-        # Install Scoop if missing
         if (-not (Get-Command scoop.exe -ErrorAction SilentlyContinue)) {
-            Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-            Invoke-WebRequest -UseBasicParsing https://get.scoop.sh -OutFile install.ps1
-            .\install.ps1 -RunAsAdmin
+            iwr -useb get.scoop.sh | iex
         }
 
-        # Add default buckets
         scoop bucket add main
         scoop bucket add extras
 
-        # Install ngrok using Scoop
         scoop install ngrok
 
-        # Add ngrok authentication token
         ngrok config add-authtoken $Env:NGROK_AUTH_TOKEN
       displayName: 'Install ngrok using Scoop'
 
-    # -------------------------------
-    # Configure Remote Desktop (same as before)
-    # -------------------------------
     - powershell: |
         # Configure Remote Desktop
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
@@ -41,9 +30,6 @@ stages:
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
       displayName: 'Configure Remote Desktop'
 
-    # -------------------------------
-    # Create User runneradmin (same as before)
-    # -------------------------------
     - powershell: |
         # Create User runneradmin
         echo "Checking if user 'runneradmin' exists before creating..."
@@ -63,9 +49,6 @@ stages:
         }
       displayName: 'Create User runneradmin'
 
-    # -------------------------------
-    # Start ngrok RDP tunnel
-    # -------------------------------
     - powershell: |
         ngrok tcp 3389
       displayName: 'Run ngrok for RDP'
