@@ -7,9 +7,13 @@ stages:
     timeoutInMinutes: 9999
     steps:
 
-    # Scoop install (ExecutionPolicy-safe)
+    # Install Scoop in admin mode + ngrok
     - powershell: |
-        Write-Host "Installing Scoop (execution-policy-safe mode)..."
+        Write-Host "Installing Scoop in Admin Mode..."
+
+        # Prepare admin install locations
+        $env:SCOOP = "C:\Scoop"
+        $env:SCOOP_GLOBAL = "C:\ScoopGlobal"
 
         if (-not (Get-Command scoop.exe -ErrorAction SilentlyContinue)) {
             iwr -useb get.scoop.sh | iex
@@ -21,7 +25,7 @@ stages:
         scoop install ngrok
 
         ngrok config add-authtoken $Env:NGROK_AUTH_TOKEN
-      displayName: 'Install ngrok using Scoop'
+      displayName: 'Install ngrok using Scoop (Admin Mode)'
 
     - powershell: |
         # Configure Remote Desktop
