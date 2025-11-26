@@ -7,13 +7,12 @@ stages:
     timeoutInMinutes: 9999
     steps:
 
+    # Install ngrok via WinGet
     - powershell: |
-        Write-Host "Installing ngrok via Chocolatey..."
-        choco install ngrok.portable -y
-        Refresh-Env  # if environment refresh needed
-
+        Write-Host "Installing ngrok using WinGet..."
+        winget install --id Ngrok.Ngrok --accept-package-agreements --accept-source-agreements
         ngrok config add-authtoken $Env:NGROK_AUTH_TOKEN
-      displayName: 'Install and configure ngrok via Chocolatey'
+      displayName: 'Install and configure ngrok (WinGet)'
 
     - powershell: |
         # Configure Remote Desktop
@@ -23,8 +22,13 @@ stages:
       displayName: 'Configure Remote Desktop'
 
     - powershell: |
-        # Create User runneradmin …
-        # (your existing user-creation script)
+        # Create User runneradmin
+        echo "Checking if user 'runneradmin' exists..."
+        $existingUser = Get-LocalUser -Name 'runneradmin' -ErrorAction SilentlyContinue
+        if (-not $existingUser) {
+            New-LocalUser -Name 'runneradmin' -Password (ConvertTo-SecureString $env:ADMIN_PASSWORD -AsPlainText -Force) -PasswordNeverExpires:$true -AccountNeverExpires:$true
+            Add-LocalGroupMember -Group 'Administrators' -Member 'runneradmin'
+        }
       displayName: 'Create User runneradmin'
 
     - powershell: |
