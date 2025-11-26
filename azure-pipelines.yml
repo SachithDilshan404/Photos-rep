@@ -3,16 +3,37 @@ stages:
   jobs:
   - job: windows_setup
     pool:
-      vmImage: 'windows-2025'  # Use the appropriate Windows version
+      vmImage: 'windows-2025'
     timeoutInMinutes: 9999
     steps:
-    - powershell: |
-        # Download and Setup ngrok
-        Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
-        Expand-Archive ngrok.zip
-        .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
-      displayName: 'Download and Setup ngrok'
 
+    # -------------------------------
+    # Install Scoop + Install ngrok
+    # -------------------------------
+    - powershell: |
+        Write-Host "Installing Scoop..."
+
+        # Install Scoop if missing
+        if (-not (Get-Command scoop.exe -ErrorAction SilentlyContinue)) {
+            Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+            Invoke-WebRequest -UseBasicParsing https://get.scoop.sh -OutFile install.ps1
+            .\install.ps1 -RunAsAdmin
+        }
+
+        # Add default buckets
+        scoop bucket add main
+        scoop bucket add extras
+
+        # Install ngrok using Scoop
+        scoop install ngrok
+
+        # Add ngrok authentication token
+        ngrok config add-authtoken $Env:NGROK_AUTH_TOKEN
+      displayName: 'Install ngrok using Scoop'
+
+    # -------------------------------
+    # Configure Remote Desktop (same as before)
+    # -------------------------------
     - powershell: |
         # Configure Remote Desktop
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
@@ -20,6 +41,9 @@ stages:
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
       displayName: 'Configure Remote Desktop'
 
+    # -------------------------------
+    # Create User runneradmin (same as before)
+    # -------------------------------
     - powershell: |
         # Create User runneradmin
         echo "Checking if user 'runneradmin' exists before creating..."
@@ -39,8 +63,9 @@ stages:
         }
       displayName: 'Create User runneradmin'
 
+    # -------------------------------
+    # Start ngrok RDP tunnel
+    # -------------------------------
     - powershell: |
-        # Run ngrok for RDP
-        .\ngrok\ngrok.exe tcp 3389
+        ngrok tcp 3389
       displayName: 'Run ngrok for RDP'
-
